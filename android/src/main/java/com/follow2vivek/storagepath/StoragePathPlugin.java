@@ -35,16 +35,19 @@ public class StoragePathPlugin implements MethodCallHandler {
     public static ArrayList<FileModel> filesModelArrayList;
     boolean hasFolder = false;
     Activity activity;
+    Context context;
     public static ArrayList<MediaModel> mediaModelArrayList;
     public static ArrayList<DocumentModel> fileModelArrayList;
 
-    StoragePathPlugin(Activity activity) {
-        this.activity = activity;
+    StoragePathPlugin(Context context) {
+        this.context = context;
+//        this.activity = activity;
     }
 
     public static void registerWith(Registrar registrar) {
+//        context = registrar.activeContext();
         final MethodChannel channel = new MethodChannel(registrar.messenger(), "storage_path");
-        channel.setMethodCallHandler(new StoragePathPlugin(registrar.activity()));
+        channel.setMethodCallHandler(new StoragePathPlugin(registrar.activeContext()));
     }
 
     @Override
@@ -109,7 +112,7 @@ public class StoragePathPlugin implements MethodCallHandler {
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
 
         final String orderBy = MediaStore.Images.Media.DATE_TAKEN;
-        cursor = activity.getContentResolver().query(uri, projection, null, null, orderBy + " DESC");
+        cursor = context.getContentResolver().query(uri, projection, null, null, orderBy + " DESC");
 
         column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
         column_index_folder_name = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.BUCKET_DISPLAY_NAME);
